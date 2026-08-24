@@ -18,12 +18,25 @@ const jost = Jost({
   display: "swap",
 });
 
+/** Falls back to localhost if the env var is unset or not a valid URL — a
+ * bad value here must never fail the whole build. */
+function resolveSiteUrl(): URL {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL;
+  if (raw) {
+    try {
+      return new URL(raw);
+    } catch {
+      console.error(`[metadata] NEXT_PUBLIC_SITE_URL is not a valid URL: ${raw}`);
+    }
+  }
+  return new URL("http://localhost:3000");
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase: resolveSiteUrl(),
     title: {
       default: `${settings.brand_name} — Wedding Films & Content, Kuching`,
       template: `%s — ${settings.brand_name}`,

@@ -11,15 +11,32 @@ import type {
 } from "@/lib/types";
 
 /**
+ * Next.js signals control flow (redirect(), notFound(), a route being forced
+ * dynamic by `cookies()`) by throwing a special error with a `digest` tag.
+ * These must always propagate — swallowing one here breaks the framework's
+ * own handling of it (e.g. a page that should render dynamically instead
+ * hard-crashes during static generation).
+ */
+function isNextControlFlowError(err: unknown): boolean {
+  const digest = (err as { digest?: unknown } | null)?.digest;
+  return (
+    typeof digest === "string" &&
+    (digest === "DYNAMIC_SERVER_USAGE" || digest.startsWith("NEXT_"))
+  );
+}
+
+/**
  * Every fetcher degrades to a sensible default when Supabase is unreachable or
  * a table is empty, so the site never renders a blank page mid-setup. `safe`
  * also catches thrown errors (e.g. an aborted fetch from the request
- * timeout), not just Postgrest's `{ error }` responses.
+ * timeout), not just Postgrest's `{ error }` responses — but only real
+ * failures; Next.js's own control-flow errors are rethrown untouched.
  */
 async function safe<T>(run: () => Promise<T>, fallback: T): Promise<T> {
   try {
     return await run();
   } catch (err) {
+    if (isNextControlFlowError(err)) throw err;
     console.error("[content] Supabase request failed:", err);
     return fallback;
   }
