@@ -13,8 +13,12 @@ export default async function SiteLayout({
   return (
     <>
       <Grain />
-      <Intro brand={settings.brand_name} location={settings.brand_location} />
-      <Nav brand={settings.brand_name} />
+      <Intro
+        brand={settings.brand_name}
+        location={settings.brand_location}
+        logoPath={settings.logo_path}
+      />
+      <Nav brand={settings.brand_name} logoPath={settings.logo_path} />
       {children}
     </>
   );

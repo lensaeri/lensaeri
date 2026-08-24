@@ -57,6 +57,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   copyright: "© 2026 LENSAERI STUDIO. ALL RIGHTS RESERVED.",
   hero_image_path: null,
   founder_image_path: null,
+  logo_path: null,
 };
 
 export async function getSettings(): Promise<SiteSettings> {

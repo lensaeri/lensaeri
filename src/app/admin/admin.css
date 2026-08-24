@@ -300,7 +300,8 @@
   flex: none;
   position: relative;
 }
-.imgf__preview img {
+.imgf__preview img,
+.imgf__preview video {
   width: 100%;
   height: 100%;
   object-fit: cover;

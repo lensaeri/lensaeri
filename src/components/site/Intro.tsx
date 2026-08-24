@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
+import { mediaUrl } from "@/lib/media";
 
 const BLADES = [0, 1, 2, 3, 4, 5, 6, 7];
 
@@ -11,9 +13,11 @@ const BLADES = [0, 1, 2, 3, 4, 5, 6, 7];
 export function Intro({
   brand,
   location,
+  logoPath,
 }: {
   brand: string;
   location: string;
+  logoPath?: string | null;
 }) {
   const [playing, setPlaying] = useState(false);
 
@@ -39,6 +43,8 @@ export function Intro({
 
   if (!playing) return null;
 
+  const logoSrc = mediaUrl(logoPath);
+
   return (
     <div className="intro" aria-hidden="true">
       <div className="intro__base" />
@@ -53,7 +59,18 @@ export function Intro({
         />
       ))}
       <div className="intro__mark">
-        <div className="intro__wordmark">{brand}</div>
+        {logoSrc ? (
+          <Image
+            src={logoSrc}
+            alt={brand}
+            width={440}
+            height={104}
+            priority
+            className="intro__logo"
+          />
+        ) : (
+          <div className="intro__wordmark">{brand}</div>
+        )}
         <div className="intro__place">{location}</div>
       </div>
     </div>

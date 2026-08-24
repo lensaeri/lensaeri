@@ -213,6 +213,11 @@ button {
   font-weight: 500;
   color: var(--cream);
 }
+.intro__logo {
+  width: clamp(180px, 30vw, 320px);
+  height: auto;
+  margin: 0 auto;
+}
 .intro__place {
   font-size: 10px;
   letter-spacing: 0.3em;
@@ -244,16 +249,26 @@ button {
   padding: 18px var(--gutter);
 }
 .nav__brand {
+  display: flex;
+  align-items: center;
   font-family: var(--serif);
   font-size: 23px;
   letter-spacing: 0.12em;
   font-weight: 600;
-  transition: letter-spacing 0.3s ease;
+  transition: letter-spacing 0.3s ease, opacity 0.3s ease;
   white-space: nowrap;
 }
 .nav__brand:hover {
   letter-spacing: 0.18em;
   color: var(--cream);
+}
+.nav__brand:has(.nav__logo):hover {
+  letter-spacing: 0.12em;
+  opacity: 0.85;
+}
+.nav__logo {
+  width: auto;
+  height: 34px;
 }
 .nav__links {
   display: flex;
@@ -1206,6 +1221,7 @@ button {
   .nav { padding: 18px var(--gutter); }
   .nav--solid { padding: 14px var(--gutter); }
   .nav__brand { font-size: 19px; }
+  .nav__logo { height: 26px; }
 
   .hero { min-height: 560px; height: 92vh; }
   .hero__body { padding-bottom: 60px; }

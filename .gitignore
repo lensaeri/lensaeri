@@ -12,3 +12,8 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+.env*
+
+# Local staging area for assets destined for Supabase Storage (uploaded via
+# the admin panel, not committed to the repo).
+/media

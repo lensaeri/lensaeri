@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { mediaUrl } from "@/lib/media";
 
 const LINKS = [
   { href: "/", label: "Home" },
@@ -12,7 +14,7 @@ const LINKS = [
   { href: "/about", label: "About" },
 ];
 
-export function Nav({ brand }: { brand: string }) {
+export function Nav({ brand, logoPath }: { brand: string; logoPath?: string | null }) {
   const pathname = usePathname();
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
@@ -35,10 +37,23 @@ export function Nav({ brand }: { brand: string }) {
   // Close the drawer on navigation.
   useEffect(() => setOpen(false), [pathname]);
 
+  const logoSrc = mediaUrl(logoPath);
+
   return (
     <nav className={`nav ${solid ? "nav--solid" : ""}`.trim()}>
-      <Link href="/" className="nav__brand">
-        {brand}
+      <Link href="/" className="nav__brand" aria-label={brand}>
+        {logoSrc ? (
+          <Image
+            src={logoSrc}
+            alt={brand}
+            width={220}
+            height={52}
+            priority
+            className="nav__logo"
+          />
+        ) : (
+          brand
+        )}
       </Link>
 
       <div className="nav__links" data-open={open}>

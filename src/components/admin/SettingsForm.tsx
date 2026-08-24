@@ -102,6 +102,13 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         </div>
 
         <ImageField
+          name="logo_path"
+          label="Site logo — nav bar & intro animation"
+          value={settings.logo_path}
+          folder="logo"
+        />
+
+        <ImageField
           name="hero_image_path"
           label="Home hero — full-bleed background"
           value={settings.hero_image_path}

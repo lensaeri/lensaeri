@@ -1,10 +1,12 @@
 import Image from "next/image";
-import { mediaUrl } from "@/lib/media";
+import { isVideoPath, mediaUrl } from "@/lib/media";
 
 /**
- * A design image slot. Renders the uploaded image when one exists, and an
- * inert dashed placeholder when it does not — so an unfinished site still
- * holds its layout instead of collapsing.
+ * A design image slot. Renders the uploaded image or video when one exists,
+ * and an inert dashed placeholder when it does not — so an unfinished site
+ * still holds its layout instead of collapsing. Video vs. image is inferred
+ * from the stored file's extension (see `isVideoPath`); videos play back
+ * silently as a looping background, matching how the image fills the slot.
  */
 export function ImageSlot({
   path,
@@ -24,10 +26,22 @@ export function ImageSlot({
   children?: React.ReactNode;
 }) {
   const src = mediaUrl(path);
+  const isVideo = isVideoPath(path);
 
   return (
     <div className={`slot ${className}`.trim()}>
-      {src ? (
+      {src && isVideo ? (
+        <video
+          src={src}
+          className="slot__img"
+          style={{ position: "absolute", inset: 0 }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-label={alt || placeholder}
+        />
+      ) : src ? (
         <Image
           src={src}
           alt={alt || placeholder}

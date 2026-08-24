@@ -96,6 +96,7 @@ export async function saveSettings(
     copyright: String(formData.get("copyright") ?? "").trim(),
     hero_image_path: String(formData.get("hero_image_path") ?? "") || null,
     founder_image_path: String(formData.get("founder_image_path") ?? "") || null,
+    logo_path: String(formData.get("logo_path") ?? "") || null,
   });
 
   if (error) return { error: error.message };

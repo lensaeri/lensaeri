@@ -12,6 +12,7 @@ export type SiteSettings = {
   copyright: string;
   hero_image_path: string | null;
   founder_image_path: string | null;
+  logo_path: string | null;
 };
 
 export type ContentBlock = {
