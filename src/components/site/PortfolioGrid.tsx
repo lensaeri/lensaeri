@@ -10,10 +10,10 @@ export type GridItem = {
   span: number;
   alt: string;
   src: string | null;
-  /** TikTok embed player src, built from the video id resolved at save time — see lib/tiktok.ts. */
-  tiktokEmbedSrc: string | null;
-  /** Raw TikTok URL, kept for the link-out fallback when resolution hasn't produced an id. */
-  tiktokUrl: string | null;
+  /** TikTok/YouTube embed player src, built from the video id resolved at save time — see lib/videoEmbed.ts. */
+  embedSrc: string | null;
+  /** Raw video URL, kept for the link-out fallback when resolution hasn't produced an id. */
+  embedUrl: string | null;
 };
 
 export function PortfolioGrid({
@@ -63,14 +63,14 @@ export function PortfolioGrid({
               </div>
             );
 
-            if (item.tiktokEmbedSrc) {
+            if (item.embedSrc) {
               return (
                 <div key={item.id} className={`slot ${spanClass}`.trim()}>
                   <iframe
-                    src={item.tiktokEmbedSrc}
-                    title={item.caption || "TikTok video"}
-                    className="slot__tiktok"
-                    allow="encrypted-media; fullscreen"
+                    src={item.embedSrc}
+                    title={item.caption || "Portfolio video"}
+                    className="slot__embed"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                     loading="lazy"
                   />
                   {caption}
@@ -78,10 +78,10 @@ export function PortfolioGrid({
               );
             }
 
-            if (item.tiktokUrl) {
-              // A TikTok link was pasted but no video id could be pulled out of it
-              // (short link like vm.tiktok.com — can't be resolved client-side).
-              // Fall back to a link-out over whatever image is set, rather than
+            if (item.embedUrl) {
+              // A video link was pasted but no video id could be pulled out of it
+              // (e.g. a TikTok short link — can't be resolved client-side). Fall
+              // back to a link-out over whatever image is set, rather than
               // silently dropping the link.
               return (
                 <div key={item.id} className={`slot ${spanClass}`.trim()}>
@@ -92,13 +92,13 @@ export function PortfolioGrid({
                     sizes="(max-width: 640px) 50vw, (max-width: 1180px) 33vw, 25vw"
                   />
                   <a
-                    href={item.tiktokUrl}
+                    href={item.embedUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="slot__tiktok-badge"
-                    aria-label="View on TikTok"
+                    className="slot__embed-badge"
+                    aria-label="View video"
                   >
-                    View on TikTok
+                    View video
                   </a>
                   {caption}
                 </div>

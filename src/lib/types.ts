@@ -43,12 +43,19 @@ export type PortfolioItem = {
   category: string;
   image_path: string | null;
   image_alt: string;
-  tiktok_url: string | null;
-  tiktok_video_id: string | null;
+  embed_url: string | null;
+  embed_video_id: string | null;
+  embed_provider: "tiktok" | "youtube" | null;
   span: number;
   sort_order: number;
   is_featured: boolean;
   is_published: boolean;
+};
+
+export type PortfolioCategory = {
+  id: string;
+  name: string;
+  sort_order: number;
 };
 
 export type Testimonial = {

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { resolveTiktokVideoId } from "@/lib/tiktok";
+import { resolveVideoEmbed } from "@/lib/videoEmbed";
 
 /**
  * All admin mutations. Every one of these runs against the caller's own
@@ -216,14 +216,16 @@ export async function savePortfolioItem(
   const supabase = await requireUser();
   const id = String(formData.get("id") ?? "");
 
-  const tiktokInput = String(formData.get("tiktok_url") ?? "").trim() || null;
-  let tiktokUrl: string | null = null;
-  let tiktokVideoId: string | null = null;
-  if (tiktokInput) {
-    const resolved = await resolveTiktokVideoId(tiktokInput);
+  const embedInput = String(formData.get("embed_url") ?? "").trim() || null;
+  let embedUrl: string | null = null;
+  let embedVideoId: string | null = null;
+  let embedProvider: string | null = null;
+  if (embedInput) {
+    const resolved = await resolveVideoEmbed(embedInput);
     if (!resolved.ok) return { error: resolved.error };
-    tiktokUrl = resolved.url;
-    tiktokVideoId = resolved.videoId;
+    embedUrl = resolved.url;
+    embedVideoId = resolved.videoId;
+    embedProvider = resolved.provider;
   }
 
   const row = {
@@ -231,9 +233,10 @@ export async function savePortfolioItem(
     category: String(formData.get("category") ?? "").trim() || "Weddings",
     image_path: String(formData.get("image_path") ?? "") || null,
     image_alt: String(formData.get("image_alt") ?? "").trim(),
-    tiktok_url: tiktokUrl,
-    tiktok_video_id: tiktokVideoId,
-    span: Math.min(2, Math.max(1, num(formData.get("span"), 1))),
+    embed_url: embedUrl,
+    embed_video_id: embedVideoId,
+    embed_provider: embedProvider,
+    span: 1, // "Grid height" removed — every item is standard height now.
     sort_order: num(formData.get("sort_order")),
     is_featured: formData.get("is_featured") === "on",
     is_published: formData.get("is_published") === "on",
@@ -273,6 +276,83 @@ export async function deletePortfolioItem(formData: FormData) {
     .delete()
     .eq("id", String(formData.get("id")));
   revalidateSite("/admin/portfolio");
+}
+
+// ---------------------------------------------------------------------------
+// Portfolio categories — a managed list backing the category dropdown,
+// edited via the "Manage categories" popup on /admin/portfolio.
+// ---------------------------------------------------------------------------
+
+export async function addPortfolioCategory(formData: FormData) {
+  const supabase = await requireUser();
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) return;
+
+  const { data } = await supabase
+    .from("portfolio_categories")
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1);
+
+  await supabase
+    .from("portfolio_categories")
+    .insert({ name, sort_order: (data?.[0]?.sort_order ?? 0) + 10 });
+
+  revalidatePath("/admin/portfolio");
+}
+
+export async function renamePortfolioCategory(formData: FormData) {
+  const supabase = await requireUser();
+  const id = String(formData.get("id") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  if (!id || !name) return;
+
+  const { data: existing } = await supabase
+    .from("portfolio_categories")
+    .select("name")
+    .eq("id", id)
+    .maybeSingle();
+  const oldName = existing?.name;
+
+  const { error } = await supabase
+    .from("portfolio_categories")
+    .update({ name })
+    .eq("id", id);
+
+  // Keep every item that used the old name pointed at the new one, so
+  // nothing silently falls off the portfolio filter.
+  if (!error && oldName && oldName !== name) {
+    await supabase
+      .from("portfolio_items")
+      .update({ category: name })
+      .eq("category", oldName);
+  }
+
+  revalidateSite("/admin/portfolio");
+}
+
+export async function deletePortfolioCategory(formData: FormData) {
+  const supabase = await requireUser();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  const { data: existing } = await supabase
+    .from("portfolio_categories")
+    .select("name")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (existing?.name) {
+    const { count } = await supabase
+      .from("portfolio_items")
+      .select("id", { count: "exact", head: true })
+      .eq("category", existing.name);
+    // Mirrors the disabled state on the Delete button — still in use, no-op.
+    if (count) return;
+  }
+
+  await supabase.from("portfolio_categories").delete().eq("id", id);
+  revalidatePath("/admin/portfolio");
 }
 
 // ---------------------------------------------------------------------------

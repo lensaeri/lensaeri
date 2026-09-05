@@ -4,9 +4,15 @@ import { useActionState } from "react";
 import { deletePortfolioItem, savePortfolioItem } from "@/app/admin/actions";
 import { ImageField } from "@/components/admin/ImageField";
 import { ActionButton, Flash, SaveButton } from "@/components/admin/SaveBar";
-import type { PortfolioItem } from "@/lib/types";
+import type { PortfolioCategory, PortfolioItem } from "@/lib/types";
 
-export function PortfolioCard({ item }: { item: PortfolioItem }) {
+export function PortfolioCard({
+  item,
+  categories,
+}: {
+  item: PortfolioItem;
+  categories: PortfolioCategory[];
+}) {
   const [state, action] = useActionState(savePortfolioItem, null);
 
   return (
@@ -45,29 +51,26 @@ export function PortfolioCard({ item }: { item: PortfolioItem }) {
           </label>
           <label className="f">
             <span>Category</span>
-            <input
-              type="text"
-              name="category"
-              defaultValue={item.category}
-              list="portfolio-categories"
-            />
-            <span className="f__hint">e.g. Weddings, Engagements, Films, BTS</span>
+            <select name="category" defaultValue={item.category}>
+              {!categories.some((c) => c.name === item.category) && item.category && (
+                <option value={item.category}>{item.category}</option>
+              )}
+              {categories.map((c) => (
+                <option key={c.id} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <span className="f__hint">
+              Need a new one? Use "Manage categories" above.
+            </span>
           </label>
         </div>
 
-        <div className="grid-2">
-          <label className="f">
-            <span>Grid height</span>
-            <select name="span" defaultValue={String(item.span)}>
-              <option value="1">Standard</option>
-              <option value="2">Tall (spans two rows)</option>
-            </select>
-          </label>
-          <label className="f">
-            <span>Order</span>
-            <input type="number" name="sort_order" defaultValue={item.sort_order} />
-          </label>
-        </div>
+        <label className="f">
+          <span>Order</span>
+          <input type="number" name="sort_order" defaultValue={item.sort_order} />
+        </label>
 
         <ImageField value={item.image_path} folder="portfolio" />
 
@@ -77,18 +80,18 @@ export function PortfolioCard({ item }: { item: PortfolioItem }) {
         </label>
 
         <label className="f">
-          <span>TikTok video link or embed code</span>
+          <span>Video link or embed code (TikTok or YouTube)</span>
           <textarea
-            name="tiktok_url"
+            name="embed_url"
             rows={3}
-            defaultValue={item.tiktok_url ?? ""}
-            placeholder="https://www.tiktok.com/@handle/video/7211234567890123456 — or paste the whole code from TikTok's Share → Embed option"
+            defaultValue={item.embed_url ?? ""}
+            placeholder="A TikTok or YouTube video link — or paste the whole code from TikTok's Share → Embed, or YouTube's Share → Embed"
           />
           <span className="f__hint">
-            Optional — the video&rsquo;s own share link (not just your @handle or
-            profile), the shortened vm.tiktok.com one, or the full snippet from
-            TikTok&rsquo;s Share → Embed option all work. When set, this plays inline
-            on the portfolio grid instead of the image/video above.
+            Optional — the video&rsquo;s own share link (TikTok or YouTube, including
+            shortened vm.tiktok.com / youtu.be links) or the full embed snippet from
+            either site&rsquo;s Share → Embed option all work. When set, this plays
+            inline on the portfolio grid instead of the image/video above.
           </span>
         </label>
 
