@@ -65,7 +65,7 @@ export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
         <ImageField
           name="photo_path"
-          label="Photo"
+          label="Photo (e.g. you with the couple)"
           value={testimonial.photo_path}
           folder="testimonials"
         />

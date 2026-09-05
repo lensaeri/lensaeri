@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "@/components/site/Footer";
 import { HeroParallax } from "@/components/site/HeroParallax";
@@ -11,7 +10,6 @@ import {
   getSettings,
   getTestimonials,
 } from "@/lib/content";
-import { mediaUrl } from "@/lib/media";
 
 export const revalidate = 60;
 
@@ -105,16 +103,12 @@ export default async function HomePage() {
           </div>
           {heroQuote && (
             <>
-              <p className="testimonial-hero__quote">{heroQuote.quote}</p>
               {heroQuote.photo_path && (
-                <Image
-                  src={mediaUrl(heroQuote.photo_path)!}
-                  alt={heroQuote.author}
-                  width={64}
-                  height={64}
-                  className="testimonial-hero__avatar"
-                />
+                <div className="testimonial-hero__photo">
+                  <ImageSlot path={heroQuote.photo_path} alt={heroQuote.author} sizes="340px" />
+                </div>
               )}
+              <p className="testimonial-hero__quote">{heroQuote.quote}</p>
               <div className="meta" style={{ color: "var(--cream-55)" }}>
                 {heroQuote.author}
                 {heroQuote.meta ? ` — ${heroQuote.meta}` : ""}
@@ -125,26 +119,20 @@ export default async function HomePage() {
         <div className="testimonial-grid">
           {cards.map((t) => (
             <figure key={t.id} className="testimonial" style={{ margin: 0 }}>
+              {t.photo_path && (
+                <div className="testimonial__photo">
+                  <ImageSlot path={t.photo_path} alt={t.author} sizes="(max-width: 860px) 100vw, 33vw" />
+                </div>
+              )}
               <div className="testimonial__mark" aria-hidden="true">
                 &ldquo;
               </div>
               <blockquote className="testimonial__quote" style={{ margin: 0 }}>
                 {t.quote}
               </blockquote>
-              <figcaption style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {t.photo_path && (
-                  <Image
-                    src={mediaUrl(t.photo_path)!}
-                    alt={t.author}
-                    width={44}
-                    height={44}
-                    className="testimonial__avatar"
-                  />
-                )}
-                <div>
-                  <div className="testimonial__author">{t.author}</div>
-                  <div className="testimonial__meta">{t.meta}</div>
-                </div>
+              <figcaption>
+                <div className="testimonial__author">{t.author}</div>
+                <div className="testimonial__meta">{t.meta}</div>
               </figcaption>
             </figure>
           ))}
