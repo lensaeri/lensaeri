@@ -43,6 +43,8 @@ export type PortfolioItem = {
   category: string;
   image_path: string | null;
   image_alt: string;
+  tiktok_url: string | null;
+  tiktok_video_id: string | null;
   span: number;
   sort_order: number;
   is_featured: boolean;
@@ -78,6 +80,12 @@ export type GalleryImage = {
   image_alt: string;
   sort_order: number;
   is_published: boolean;
+};
+
+export type SystemUpdate = {
+  id: string;
+  summary: string;
+  created_at: string;
 };
 
 export type Inquiry = {

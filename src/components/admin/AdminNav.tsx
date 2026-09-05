@@ -14,6 +14,7 @@ const LINKS = [
   { href: "/admin/gallery", label: "Gallery" },
   { href: "/admin/settings", label: "Settings" },
   { href: "/admin/inquiries", label: "Inquiries", badge: true },
+  { href: "/admin/updates", label: "System Updates" },
 ];
 
 export function AdminNav({ email, unread }: { email: string; unread: number }) {

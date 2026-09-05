@@ -3,6 +3,7 @@ import { Footer } from "@/components/site/Footer";
 import { Orbit } from "@/components/site/Orbit";
 import { PortfolioGrid } from "@/components/site/PortfolioGrid";
 import { getCopy, getPortfolio, getSettings, mediaUrl } from "@/lib/content";
+import { tiktokEmbedSrc } from "@/lib/tiktok";
 
 export const revalidate = 60;
 
@@ -26,6 +27,8 @@ export default async function PortfolioPage() {
     span: item.span,
     alt: item.image_alt,
     src: mediaUrl(item.image_path),
+    tiktokEmbedSrc: tiktokEmbedSrc(item.tiktok_video_id),
+    tiktokUrl: item.tiktok_url,
   }));
 
   const categories = [

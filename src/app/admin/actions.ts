@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { resolveTiktokVideoId } from "@/lib/tiktok";
 
 /**
  * All admin mutations. Every one of these runs against the caller's own
@@ -215,11 +216,23 @@ export async function savePortfolioItem(
   const supabase = await requireUser();
   const id = String(formData.get("id") ?? "");
 
+  const tiktokInput = String(formData.get("tiktok_url") ?? "").trim() || null;
+  let tiktokUrl: string | null = null;
+  let tiktokVideoId: string | null = null;
+  if (tiktokInput) {
+    const resolved = await resolveTiktokVideoId(tiktokInput);
+    if (!resolved.ok) return { error: resolved.error };
+    tiktokUrl = resolved.url;
+    tiktokVideoId = resolved.videoId;
+  }
+
   const row = {
     caption: String(formData.get("caption") ?? "").trim(),
     category: String(formData.get("category") ?? "").trim() || "Weddings",
     image_path: String(formData.get("image_path") ?? "") || null,
     image_alt: String(formData.get("image_alt") ?? "").trim(),
+    tiktok_url: tiktokUrl,
+    tiktok_video_id: tiktokVideoId,
     span: Math.min(2, Math.max(1, num(formData.get("span"), 1))),
     sort_order: num(formData.get("sort_order")),
     is_featured: formData.get("is_featured") === "on",
@@ -452,4 +465,22 @@ export async function deleteInquiry(formData: FormData) {
   await supabase.from("inquiries").delete().eq("id", String(formData.get("id")));
   revalidatePath("/admin/inquiries");
   revalidatePath("/admin");
+}
+
+// ---------------------------------------------------------------------------
+// System updates — an admin-only changelog, not shown on the public site
+// ---------------------------------------------------------------------------
+
+export async function addSystemUpdate(formData: FormData) {
+  const supabase = await requireUser();
+  const summary = String(formData.get("summary") ?? "").trim();
+  if (!summary) return;
+  await supabase.from("system_updates").insert({ summary });
+  revalidatePath("/admin/updates");
+}
+
+export async function deleteSystemUpdate(formData: FormData) {
+  const supabase = await requireUser();
+  await supabase.from("system_updates").delete().eq("id", String(formData.get("id")));
+  revalidatePath("/admin/updates");
 }

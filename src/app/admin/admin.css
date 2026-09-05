@@ -457,6 +457,34 @@
   color: var(--cream-50);
 }
 
+/* --- system updates log --- */
+.log__entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.log__entry:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.log__entry:first-child {
+  padding-top: 0;
+}
+.log__summary {
+  font-size: 14px;
+  color: var(--cream-80);
+}
+.log__date {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-45);
+  white-space: nowrap;
+}
+
 /* --- responsive --- */
 @media (max-width: 900px) {
   .admin {

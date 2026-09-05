@@ -76,6 +76,22 @@ export function PortfolioCard({ item }: { item: PortfolioItem }) {
           <input type="text" name="image_alt" defaultValue={item.image_alt} />
         </label>
 
+        <label className="f">
+          <span>TikTok video link or embed code</span>
+          <textarea
+            name="tiktok_url"
+            rows={3}
+            defaultValue={item.tiktok_url ?? ""}
+            placeholder="https://www.tiktok.com/@handle/video/7211234567890123456 — or paste the whole code from TikTok's Share → Embed option"
+          />
+          <span className="f__hint">
+            Optional — the video&rsquo;s own share link (not just your @handle or
+            profile), the shortened vm.tiktok.com one, or the full snippet from
+            TikTok&rsquo;s Share → Embed option all work. When set, this plays inline
+            on the portfolio grid instead of the image/video above.
+          </span>
+        </label>
+
         <div className="row-actions">
           <SaveButton label="Save item" />
         </div>
