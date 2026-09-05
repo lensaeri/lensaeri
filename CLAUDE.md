@@ -128,6 +128,20 @@ Then create the admin login: Dashboard → Authentication → Users → Add user
 (email + password, "Auto Confirm User" checked). That's the only account
 that can sign in at `/admin` — there is no self-service signup.
 
+## Email
+
+The Packages page inquiry form (`src/components/site/InquiryForm.tsx` →
+`submitInquiry()` in `src/app/actions.ts`) sends two transactional emails via
+[Resend](https://resend.com) after the inquiry is saved to Postgres:
+an admin notification (to `ADMIN_NOTIFY_EMAIL`, default `lensaeri@gmail.com`)
+and a confirmation back to the customer's own address. Both are built in
+`src/lib/email.ts`, which renders a shared dark-cinematic HTML shell (the
+site's logo/wordmark as the header, ink/cream tokens for the body) around
+per-audience copy. Sending is best-effort: the database insert is the source
+of truth, so a missing `RESEND_API_KEY` or a Resend outage is logged and
+swallowed rather than surfaced to the visitor as a failed submission. See
+`.env.example` for the relevant env vars.
+
 ## Deployment
 
 Hosted on Vercel, connected to this GitHub repo's `main` branch. Required

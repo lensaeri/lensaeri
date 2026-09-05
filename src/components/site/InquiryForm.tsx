@@ -47,6 +47,28 @@ export function InquiryForm({
       </div>
 
       <div className="field">
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          placeholder="amelia@email.com"
+        />
+      </div>
+
+      <div className="field">
+        <label htmlFor="phone">Phone Number</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          required
+          placeholder="+60 12-345 6789"
+        />
+      </div>
+
+      <div className="field">
         <label htmlFor="event_date">Event Date</label>
         <input id="event_date" name="event_date" type="date" />
       </div>

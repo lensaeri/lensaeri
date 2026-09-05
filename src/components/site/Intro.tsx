@@ -7,8 +7,8 @@ import { mediaUrl } from "@/lib/media";
 const BLADES = [0, 1, 2, 3, 4, 5, 6, 7];
 
 /**
- * The cinematic title card. Plays once per browser session so repeat
- * navigation within a visit is not gated behind four seconds of animation.
+ * The cinematic title card. Plays on every full page load/refresh (unless
+ * the visitor prefers reduced motion).
  */
 export function Intro({
   brand,
@@ -23,20 +23,9 @@ export function Intro({
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let seen = false;
-    try {
-      seen = sessionStorage.getItem("lensaeri:intro") === "1";
-    } catch {
-      /* private mode — just play it */
-    }
-    if (reduced || seen) return;
+    if (reduced) return;
 
     setPlaying(true);
-    try {
-      sessionStorage.setItem("lensaeri:intro", "1");
-    } catch {
-      /* no-op */
-    }
     const timer = setTimeout(() => setPlaying(false), 4100);
     return () => clearTimeout(timer);
   }, []);

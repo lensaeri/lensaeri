@@ -45,6 +45,8 @@ export default async function InquiriesPage() {
             </div>
 
             <div className="inq__meta">
+              {inquiry.email && <span>Email: {inquiry.email}</span>}
+              {inquiry.phone && <span>Phone: {inquiry.phone}</span>}
               {inquiry.event_date && <span>Date: {inquiry.event_date}</span>}
               {inquiry.location && <span>Location: {inquiry.location}</span>}
               {inquiry.package && <span>Package: {inquiry.package}</span>}
