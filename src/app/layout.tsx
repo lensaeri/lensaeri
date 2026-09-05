@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import { getSettings } from "@/lib/content";
+import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -17,20 +18,6 @@ const jost = Jost({
   variable: "--font-jost",
   display: "swap",
 });
-
-/** Falls back to localhost if the env var is unset or not a valid URL — a
- * bad value here must never fail the whole build. */
-function resolveSiteUrl(): URL {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL;
-  if (raw) {
-    try {
-      return new URL(raw);
-    } catch {
-      console.error(`[metadata] NEXT_PUBLIC_SITE_URL is not a valid URL: ${raw}`);
-    }
-  }
-  return new URL("http://localhost:3000");
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
