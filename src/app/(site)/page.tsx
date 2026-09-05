@@ -104,9 +104,12 @@ export default async function HomePage() {
           {heroQuote && (
             <>
               {heroQuote.photo_path && (
-                <div className="testimonial-hero__photo">
-                  <ImageSlot path={heroQuote.photo_path} alt={heroQuote.author} sizes="340px" />
-                </div>
+                <ImageSlot
+                  path={heroQuote.photo_path}
+                  alt={heroQuote.author}
+                  sizes="340px"
+                  className="testimonial-hero__photo"
+                />
               )}
               <p className="testimonial-hero__quote">{heroQuote.quote}</p>
               <div className="meta" style={{ color: "var(--cream-55)" }}>
@@ -120,9 +123,12 @@ export default async function HomePage() {
           {cards.map((t) => (
             <figure key={t.id} className="testimonial" style={{ margin: 0 }}>
               {t.photo_path && (
-                <div className="testimonial__photo">
-                  <ImageSlot path={t.photo_path} alt={t.author} sizes="(max-width: 860px) 100vw, 33vw" />
-                </div>
+                <ImageSlot
+                  path={t.photo_path}
+                  alt={t.author}
+                  sizes="(max-width: 860px) 100vw, 33vw"
+                  className="testimonial__photo"
+                />
               )}
               <div className="testimonial__mark" aria-hidden="true">
                 &ldquo;
