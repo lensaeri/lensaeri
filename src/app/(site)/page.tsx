@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "@/components/site/Footer";
 import { HeroParallax } from "@/components/site/HeroParallax";
@@ -10,6 +11,7 @@ import {
   getSettings,
   getTestimonials,
 } from "@/lib/content";
+import { mediaUrl } from "@/lib/media";
 
 export const revalidate = 60;
 
@@ -104,6 +106,15 @@ export default async function HomePage() {
           {heroQuote && (
             <>
               <p className="testimonial-hero__quote">{heroQuote.quote}</p>
+              {heroQuote.photo_path && (
+                <Image
+                  src={mediaUrl(heroQuote.photo_path)!}
+                  alt={heroQuote.author}
+                  width={64}
+                  height={64}
+                  className="testimonial-hero__avatar"
+                />
+              )}
               <div className="meta" style={{ color: "var(--cream-55)" }}>
                 {heroQuote.author}
                 {heroQuote.meta ? ` — ${heroQuote.meta}` : ""}
@@ -120,9 +131,20 @@ export default async function HomePage() {
               <blockquote className="testimonial__quote" style={{ margin: 0 }}>
                 {t.quote}
               </blockquote>
-              <figcaption>
-                <div className="testimonial__author">{t.author}</div>
-                <div className="testimonial__meta">{t.meta}</div>
+              <figcaption style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                {t.photo_path && (
+                  <Image
+                    src={mediaUrl(t.photo_path)!}
+                    alt={t.author}
+                    width={44}
+                    height={44}
+                    className="testimonial__avatar"
+                  />
+                )}
+                <div>
+                  <div className="testimonial__author">{t.author}</div>
+                  <div className="testimonial__meta">{t.meta}</div>
+                </div>
               </figcaption>
             </figure>
           ))}

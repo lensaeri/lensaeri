@@ -426,6 +426,7 @@ export async function saveTestimonial(
     quote: String(formData.get("quote") ?? "").trim(),
     author: String(formData.get("author") ?? "").trim(),
     meta: String(formData.get("meta") ?? "").trim(),
+    photo_path: String(formData.get("photo_path") ?? "").trim() || null,
     is_hero: formData.get("is_hero") === "on",
     sort_order: num(formData.get("sort_order")),
     is_published: formData.get("is_published") === "on",

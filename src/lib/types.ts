@@ -63,6 +63,7 @@ export type Testimonial = {
   quote: string;
   author: string;
   meta: string;
+  photo_path: string | null;
   is_hero: boolean;
   sort_order: number;
   is_published: boolean;

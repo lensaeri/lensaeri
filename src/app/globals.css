@@ -773,6 +773,15 @@ button {
   max-width: 820px;
   margin: 0 auto 30px;
 }
+.testimonial-hero__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  margin: 0 auto 16px;
+  display: block;
+}
 .testimonial-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -799,6 +808,14 @@ button {
   line-height: 1.85;
   color: var(--cream-75);
   margin: 0 0 28px;
+}
+.testimonial__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
 }
 .testimonial__author {
   font-family: var(--serif);

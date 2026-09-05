@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { deleteTestimonial, saveTestimonial } from "@/app/admin/actions";
 import { ActionButton, Flash, SaveButton } from "@/components/admin/SaveBar";
+import { ImageField } from "@/components/admin/ImageField";
 import type { Testimonial } from "@/lib/types";
 
 export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
@@ -61,6 +62,13 @@ export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             />
           </label>
         </div>
+
+        <ImageField
+          name="photo_path"
+          label="Photo"
+          value={testimonial.photo_path}
+          folder="testimonials"
+        />
 
         <div className="row-actions">
           <SaveButton label="Save testimonial" />
